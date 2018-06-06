@@ -3,8 +3,9 @@ package com.aidanmurphey.scoremanager;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import com.google.gson.Gson;
 
@@ -21,8 +22,9 @@ public class ApiManager {
 	
 	public ApiResponse sendRequest(int action, String parameters) {
 		try {
-			URL url = new URL("http://score.man:80/api/record/" + appId);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			String link = "https://sm.aidanmurphey.com/api/record/";
+			URL url = new URL(link + appId);
+			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 			
 			if (action == GET_RECORDS)
 				conn.setRequestMethod("GET");
@@ -33,6 +35,7 @@ public class ApiManager {
 			}
 			
 			conn.setRequestProperty("Accept", "application/json");
+			conn.setRequestProperty("User-Agent", "Java client");
 			conn.setRequestProperty("Api-Key", apiKey);
 			
 			if (action == ADD_RECORD) {
