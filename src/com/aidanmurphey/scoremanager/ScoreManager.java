@@ -1,5 +1,7 @@
 package com.aidanmurphey.scoremanager;
 
+import java.util.ArrayList;
+
 public class ScoreManager {
 	
 	private ApiManager manager;
@@ -10,12 +12,20 @@ public class ScoreManager {
 		this.manager = new ApiManager(apiKey, appId);
 	}
 	
-	public ApiResponse requestRecords() {
-		return manager.sendRequest(ApiManager.GET_RECORDS, null);
+	public ArrayList<Record> requestRecords() {
+		ApiResponse response = manager.sendRequest(ApiManager.GET_RECORDS, null);
+		if (response.getFailed()) {
+			throw new APIException(response.getError());
+		}
+		
+		return response.getRecords();
 	}
 	
-	public ApiResponse submitRecord(String name, int score) {
-		return manager.sendRequest(ApiManager.ADD_RECORD, "name=" + name + "&score=" + score);
+	public void submitRecord(String name, int score) {
+		ApiResponse response = manager.sendRequest(ApiManager.ADD_RECORD, "name=" + name + "&score=" + score);
+		if (response.getFailed()) {
+			throw new APIException(response.getError());
+		}
 	}
 
 }
